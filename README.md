@@ -1,5 +1,11 @@
 # WSL2 で Determinate Nix をインストールし、Home Manager を有効化する手順
 
+![Nix](https://img.shields.io/badge/Nix-5277C3?style=for-the-badge&logo=nixos&logoColor=white)
+![Home%20Manager](https://img.shields.io/badge/Home%20Manager-0F4C81?style=for-the-badge&logo=homeadvisor&logoColor=white)
+![Flakes](https://img.shields.io/badge/Nix%20Flakes-4C566A?style=for-the-badge&logo=nixos&logoColor=white)
+![WSL2](https://img.shields.io/badge/WSL2-4D4D4D?style=for-the-badge&logo=windows11&logoColor=white)
+![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
+
 WSL2上にインストールされたUbuntuディストリを前提に，**Determinate Nix** を導入し，**Home Manager を standalone + flakes 構成で有効化する**ための手順書である。
 
 > [!CAUTION]
