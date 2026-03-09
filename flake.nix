@@ -25,6 +25,10 @@
       windowsUsername = "aoxor";
       windowsHome = "/mnt/c/Users/${windowsUsername}";
 
+      zedBin = "${windowsHome}/AppData/Local/Programs/Zed/bin";
+      vscodeBin = "${windowsHome}/AppData/Local/Programs/Microsoft VS Code/bin";
+      gcmPath = "${windowsHome}/scoop/apps/git/current/mingw64/bin/git-credential-manager.exe";
+
       pkgs = nixpkgs.legacyPackages.${system};
     in
     {
@@ -76,10 +80,12 @@
                 user.name = "Hikaru Koizumi";
                 user.email = "you@example.com";
 
-                credential.helper = "/mnt/c/Users/aoxor/scoop/apps/git/2.53.0/mingw64/bin/git-credential-manager.exe";
+                credential.helper = gcmPath;
 
                 init.defaultBranch = "main";
                 pull.rebase = false;
+                pull.ff = true;
+                merge.ff = false;
                 push.autoSetupRemote = true;
                 core.editor = "vim";
                 color.ui = true;
@@ -120,7 +126,6 @@
                   "git"
                   "fzf"
                   "sudo"
-                  "docker"
                 ];
                 theme = "powerlevel10k/powerlevel10k";
                 custom = "$HOME/.oh-my-zsh/custom";
@@ -216,8 +221,8 @@
             home.sessionPath = [
               "$HOME/.volta/bin"
               "$HOME/.pixi/bin"
-              "${windowsHome}/AppData/Local/Programs/Zed/bin"
-              "${windowsHome}/AppData/Local/Programs/Microsoft VS Code/bin"
+              zedBin
+              vscodeBin
             ];
           }
         ];
