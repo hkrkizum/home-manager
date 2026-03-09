@@ -76,7 +76,7 @@
                 user.name = "Hikaru Koizumi";
                 user.email = "you@example.com";
 
-                credential.helper = "/mnt/c/Program Files/Git/mingw64/bin/git-credential-manager.exe";
+                credential.helper = "/mnt/c/Users/aoxor/scoop/apps/git/2.53.0/mingw64/bin/git-credential-manager.exe";
 
                 init.defaultBranch = "main";
                 pull.rebase = false;
