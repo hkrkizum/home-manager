@@ -24,10 +24,11 @@
 
       windowsUsername = "aoxor";
       windowsHome = "/mnt/c/Users/${windowsUsername}";
-
+      
+      toolBin = "${homeDirectory}/.local/bin";
       zedBin = "${windowsHome}/AppData/Local/Programs/Zed/bin";
       vscodeBin = "${windowsHome}/AppData/Local/Programs/Microsoft VS Code/bin";
-      gcmPath = "${windowsHome}/scoop/apps/git/current/mingw64/bin/git-credential-manager.exe";
+      gcmPath = "${windowsHome}/scoop/apps/git/current/mingw64/bin/git-credential-manager.exe";      
 
       pkgs = nixpkgs.legacyPackages.${system};
     in
@@ -221,6 +222,7 @@
             home.sessionPath = [
               "$HOME/.volta/bin"
               "$HOME/.pixi/bin"
+              toolBin
               zedBin
               vscodeBin
             ];
