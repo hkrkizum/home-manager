@@ -21,6 +21,10 @@
 
       username = "hikaru";
       homeDirectory = "/home/${username}";
+
+      windowsUsername = "aoxor";
+      windowsHome = "/mnt/c/Users/${windowsUsername}";
+
       pkgs = nixpkgs.legacyPackages.${system};
     in
     {
@@ -210,6 +214,8 @@
             home.sessionPath = [
               "$HOME/.volta/bin"
               "$HOME/.pixi/bin"
+              "${windowsHome}/AppData/Local/Programs/Zed/bin"
+              "${windowsHome}/AppData/Local/Programs/Microsoft VS Code/bin"
             ];
           }
         ];
