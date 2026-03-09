@@ -1,37 +1,40 @@
 # WSL2 で Determinate Nix をインストールし、Home Manager を有効化する手順
 
-この README は、**WSL2 上の Ubuntu / Debian 系ディストリ**を前提に、**Determinate Nix** を導入し、**Home Manager を standalone + flakes 構成で有効化する**ための、コピペしやすい Step-by-Step 手順書です。
+WSL2上にインストールされたUbuntuディストリを前提に，**Determinate Nix** を導入し，**Home Manager を standalone + flakes 構成で有効化する**ための手順書である。
+
+> [!CAUTION]
+> 個人的な備忘録のため，本手順書の正確性は担保しない。自己責任での利用をお願い致します。
 
 ## 想定環境
 
-- Windows 上で WSL2 を使用している
-- WSL ディストリは Ubuntu / Debian 系
-- WSL 内で `sudo` が使える
-- Home Manager は **standalone** で使う
-- Nix は **flakes ベース**で運用する
+- Windows上でWSL2を使用している
+- WSLディストリはUbuntu / Debian系
+- WSL内で`sudo`が使える
+- Home Managerは**standalone**で使う
+- Nixは**flakes ベース**で運用する
 
 ---
 
 ## 0. 事前確認
 
-### Windows 側 PowerShell で確認
+### Windows側PowerShellで確認
 
 ```powershell
 wsl --version
 wsl -l -v
 ```
 
-確認したい点:
+確認事項:
 
-- 対象ディストリが **Version 2**
-- `wsl --version` が利用できること
-- systemd 対応済みの WSL であること
+- [ ] 対象ディストリが **Version 2**
+- [ ] `wsl --version` が利用できること
+- [ ] systemd 対応済みの WSL であること
 
 ---
 
-## 1. WSL2 で systemd を有効化する
+## 1. WSL2でsystemdを有効化する
 
-WSL 側で `/etc/wsl.conf` を作成または更新します。
+WSL側で `/etc/wsl.conf`を作成または更新する。
 
 ```bash
 sudo tee /etc/wsl.conf >/dev/null <<'EOF'
@@ -40,25 +43,25 @@ systemd=true
 EOF
 ```
 
-次に、**Windows 側 PowerShell** で WSL を停止します。
+次に、**Windows 側 PowerShell**でWSLを停止する。
 
 ```powershell
 wsl --shutdown
 ```
 
-その後、WSL を再度起動して確認します。
+その後，WSLを再度起動して確認する。
 
 ```bash
 systemctl list-unit-files --type=service >/dev/null && echo "systemd: OK"
 ```
 
-`systemd: OK` と表示されれば先へ進めます。
+`systemd: OK` と表示されれば良い。
 
 ---
 
-## 2. Determinate Nix をインストールする
+## 2. Determinate Nixをインストールする
 
-WSL 内で次を実行します。
+WSL内で次を実行する。
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
@@ -66,7 +69,7 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 
 ### 現在のシェルに Nix 環境を読み込む
 
-インストール直後に `nix` コマンドが見えない場合は、次を実行します。
+インストール直後に `nix` コマンドが見えない場合は、次を実行する。
 
 ```bash
 . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
@@ -92,10 +95,10 @@ cd ~/.config/home-manager
 
 ## 4. `flake.nix` を作る
 
-`~/.config/home-manager/flake.nix` を次の内容で作成してください。
+`~/.config/home-manager/flake.nix` を次の内容で作成する。
 
-> **注意:** `YOUR_USERNAME` は自分の Linux ユーザー名に置き換えてください。  
-> 通常は `whoami` の結果です。
+> **注意:** `YOUR_USERNAME` は自分の Linux ユーザー名に置き換えること。  
+> 通常は `whoami` の結果である。
 
 ```nix
 {
@@ -165,15 +168,15 @@ username = "hikaru";
 
 ---
 
-## 5. 初回適用する
+## 5. 初回セットアップ
 
-WSL 内で次を実行します。
+WSL 内で次を実行する。
 
 ```bash
 nix run home-manager/release-25.11 -- switch --flake ~/.config/home-manager#$(whoami)
 ```
 
-成功後は、通常の `home-manager` コマンドが使えるようになります。
+成功後は、通常の `home-manager` コマンドが使えるようになる。
 
 ```bash
 home-manager generations
@@ -192,22 +195,22 @@ echo $EDITOR
 
 期待する状態:
 
-- `home-manager --version` が表示される
-- `git --version` が表示される
-- `echo $EDITOR` が `vim` を返す
+- [ ] `home-manager --version` が表示される
+- [ ] `git --version` が表示される
+- [ ] `echo $EDITOR` が `vim` を返す
 
 ---
 
 ## 7. 以後の運用
 
-設定を変更したら、`flake.nix` を保存して次を実行します。
+設定を変更した後，`flake.nix` を保存して次を実行する。
 
 ```bash
 cd ~/.config/home-manager
 home-manager switch --flake .#$(whoami)
 ```
 
-inputs を更新したいときは次です。
+inputs を更新した後は次を実行する。
 
 ```bash
 cd ~/.config/home-manager
@@ -221,21 +224,21 @@ home-manager switch --flake .#$(whoami)
 
 ### `systemd: OK` にならない
 
-次を確認してください。
+次を確認する。
 
-- `/etc/wsl.conf` の内容が正しいか
-- **Windows 側 PowerShell** で `wsl --shutdown` を実行したか
-- その後に WSL を開き直したか
+- [ ] `/etc/wsl.conf` の内容が正しいか
+- [ ] **Windows 側 PowerShell** で `wsl --shutdown` を実行したか
+- [ ] その後に WSL を開き直したか
 
 ### `nix: command not found`
 
-次を実行してください。
+次を実行する。
 
 ```bash
 . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 ```
 
-その後、もう一度確認します。
+その後、もう一度確認する。
 
 ```bash
 nix --version
@@ -243,58 +246,19 @@ nix --version
 
 ### Home Manager の branch mismatch が出る
 
-`nixpkgs` と `home-manager` の release 系を揃えてください。  
-この README では両方とも **25.11** を使っています。
+`nixpkgs` と `home-manager` の release 系を揃える。このREADMEでは両方とも **25.11** を使っている。
 
 ---
 
-## 9. 最短手順だけ抜き出す
-
-### 1. systemd を有効化
-
-```bash
-sudo tee /etc/wsl.conf >/dev/null <<'EOF'
-[boot]
-systemd=true
-EOF
-```
-
-```powershell
-wsl --shutdown
-```
-
-### 2. Determinate Nix をインストール
-
-```bash
-curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
-. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-```
-
-### 3. Home Manager 設定を作成
-
-```bash
-mkdir -p ~/.config/home-manager
-cd ~/.config/home-manager
-```
-
-`flake.nix` を配置する。
-
-### 4. 初回適用
-
-```bash
-nix run home-manager/release-25.11 -- switch --flake ~/.config/home-manager#$(whoami)
-```
-
----
-
-## 10. 参考
+## 9. 参考
 
 - Microsoft WSL 設定ドキュメント
 - Determinate Nix Installer
 - Home Manager 公式 README
 - Nix flakes documentation
 
-必要なら次に、以下のどちらかに続けられます。
+---
 
-1. **zsh / git / neovim / starship を最初から入れた実用版 `flake.nix`**
-2. **WSL2 + Home Manager + direnv + devenv まで含めた開発環境テンプレート**
+## 10. ライセンス
+
+- MIT License
