@@ -30,8 +30,6 @@ wsl -l -v
 - [ ] `wsl --version` が利用できること
 - [ ] systemd 対応済みの WSL であること
 
----
-
 ## 1. WSL2でsystemdを有効化する
 
 WSL側で `/etc/wsl.conf`を作成または更新する。
@@ -82,16 +80,12 @@ nix --version
 nix config show experimental-features
 ```
 
----
-
 ## 3. Home Manager 用ディレクトリを作る
 
 ```bash
 mkdir -p ~/.config/home-manager
 cd ~/.config/home-manager
 ```
-
----
 
 ## 4. `flake.nix` を作る
 
@@ -166,8 +160,6 @@ whoami
 username = "hikaru";
 ```
 
----
-
 ## 5. 初回セットアップ
 
 WSL 内で次を実行する。
@@ -183,8 +175,6 @@ home-manager generations
 home-manager switch --flake ~/.config/home-manager#$(whoami)
 ```
 
----
-
 ## 6. 動作確認
 
 ```bash
@@ -198,8 +188,6 @@ echo $EDITOR
 - [ ] `home-manager --version` が表示される
 - [ ] `git --version` が表示される
 - [ ] `echo $EDITOR` が `vim` を返す
-
----
 
 ## 7. 以後の運用
 
@@ -217,8 +205,6 @@ cd ~/.config/home-manager
 nix flake update
 home-manager switch --flake .#$(whoami)
 ```
-
----
 
 ## 8. よくあるトラブル
 
@@ -248,8 +234,6 @@ nix --version
 
 `nixpkgs` と `home-manager` の release 系を揃える。このREADMEでは両方とも **25.11** を使っている。
 
----
-
 ## 9. 参考
 
 - Microsoft WSL 設定ドキュメント
@@ -257,8 +241,7 @@ nix --version
 - Home Manager 公式 README
 - Nix flakes documentation
 
----
-
 ## 10. ライセンス
 
 - MIT License
+- 本プロジェクトはClaude Code及びCodexの支援を受けて作成された
