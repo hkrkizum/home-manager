@@ -24,15 +24,17 @@
 
       windowsUsername = "aoxor";
       windowsHome = "/mnt/c/Users/${windowsUsername}";
-      
+
       toolBin = "${homeDirectory}/.local/bin";
       zedBin = "${windowsHome}/AppData/Local/Programs/Zed/bin";
       vscodeBin = "${windowsHome}/AppData/Local/Programs/Microsoft VS Code/bin";
-      gcmPath = "${windowsHome}/scoop/apps/git/current/mingw64/bin/git-credential-manager.exe";      
+      gcmPath = "${windowsHome}/scoop/apps/git/current/mingw64/bin/git-credential-manager.exe";
 
       pkgs = nixpkgs.legacyPackages.${system};
     in
     {
+      formatter.${system} = pkgs.nixfmt-tree;
+
       homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
 
@@ -55,6 +57,10 @@
               zip
               jq
               tree
+              dust
+              procs
+
+              # nix
               nil
               nixd
               nixfmt
@@ -66,6 +72,11 @@
 
               # containers
               podman
+              podman-compose
+
+              # GitHub CLI
+              gh
+              lazygit
 
               # prompt / shell extras
               zsh-powerlevel10k
@@ -99,6 +110,15 @@
                   cm = "commit -m";
                   lg = "log --oneline --graph --decorate --all";
                 };
+              };
+            };
+
+            programs.delta = {
+              enable = true;
+              enableGitIntegration = true;
+              options = {
+                navigate = true;
+                side-by-side = true;
               };
             };
 
@@ -183,6 +203,23 @@
             '';
 
             # ----------------------------
+            # Podman (rootless) config files
+            # ----------------------------
+            xdg.configFile."containers/registries.conf".text = ''
+              [registries.search]
+              registries = ['docker.io']
+            '';
+
+            xdg.configFile."containers/policy.json".text = builtins.toJSON {
+              default = [ { type = "insecureAcceptAnything"; } ];
+            };
+
+            xdg.configFile."containers/storage.conf".text = ''
+              [storage]
+              driver = "overlay"
+            '';
+
+            # ----------------------------
             # Modern CLI tools
             # ----------------------------
             programs.eza = {
@@ -190,6 +227,11 @@
               enableZshIntegration = true;
               git = true;
               icons = "auto";
+            };
+
+            programs.zoxide = {
+              enable = true;
+              enableZshIntegration = true;
             };
 
             programs.fzf = {
@@ -209,6 +251,37 @@
               enable = true;
             };
 
+            programs.btop.enable = true;
+            programs.tealdeer.enable = true;
+
+            programs.direnv = {
+              enable = true;
+              enableZshIntegration = true;
+              nix-direnv.enable = true;
+            };
+
+            programs.neovim = {
+              enable = true;
+              # defaultEditor = true;
+              viAlias = true;
+              vimAlias = true;
+              vimdiffAlias = true;
+              # extraPackages = with pkgs; [
+              #   lua-language-server
+              #   nodePackages.typescript-language-server
+              #   bash-language-server
+              #   vim-language-server
+              #   emmet-language-server
+              #   gopls
+              #   nil
+              #   pyright
+              #   stylua
+              #   nixfmt-rfc-style
+              #   skkDictionaries.l
+              # ];
+              plugins = with pkgs.vimPlugins; [ lazy-nvim ];
+            };
+
             # ----------------------------
             # Environment variables
             # ----------------------------
@@ -222,6 +295,7 @@
             home.sessionPath = [
               "$HOME/.volta/bin"
               "$HOME/.pixi/bin"
+              "$HOME/.local/bin"
               toolBin
               zedBin
               vscodeBin
