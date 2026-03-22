@@ -283,6 +283,82 @@
             };
 
             # ----------------------------
+            # LazyGit のカスタムコマンドで Claude Code を呼び出すための設定
+            # ----------------------------
+            # ラッパースクリプトを配置
+            home.file.".local/bin/claude-commit" = {
+              executable = true;
+              text = ''
+                #!/bin/bash
+                set -euo pipefail
+
+                # Nix環境のPATHを読み込む
+                if [ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
+                  . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+                fi
+                export PATH="$HOME/.nix-profile/bin:$HOME/.npm-global/bin:$HOME/.local/bin:$PATH"
+
+                if git diff --cached --quiet; then
+                  echo "ステージされた変更がありません"
+                  sleep 1
+                  exit 1
+                fi
+
+                DIFF_FILE=$(mktemp /tmp/claude-commit-diff.XXXXXX)
+                git diff --cached > "$DIFF_FILE"
+                STAT=$(git diff --cached --stat)
+
+                claude \
+                  --system-prompt "あなたはGitコミットメッセージの作成を支援するアシスタントです。
+                ユーザーとの対話を通じて適切なコミットメッセージを作成してください。
+                Conventional Commits形式を使い、ユーザーが承認したら最終メッセージを /tmp/claude-commit-msg.txt に書き出してください。" \
+                  -p "以下のGit差分に対するコミットメッセージを一緒に考えましょう。
+
+                ### 変更の統計:
+                $STAT
+
+                ### 差分の内容:
+                $(cat "$DIFF_FILE")
+
+                まず差分を分析して、コミットメッセージの候補を提案してください。"
+
+                rm -f "$DIFF_FILE"
+
+                if [ -f /tmp/claude-commit-msg.txt ]; then
+                  MSG=$(cat /tmp/claude-commit-msg.txt)
+                  rm -f /tmp/claude-commit-msg.txt
+                  if [ -n "$MSG" ]; then
+                    echo ""
+                    echo "━━━ 以下のメッセージでコミットします ━━━"
+                    echo "$MSG"
+                    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+                    read -rp "実行しますか? [Y/n] " confirm
+                    confirm=''${confirm:-Y}
+                    if [[ "$confirm" =~ ^[Yy]$ ]]; then
+                      git commit -m "$MSG"
+                      echo "コミット完了!"
+                    else
+                      echo "キャンセルしました"
+                    fi
+                  fi
+                else
+                  echo "コミットメッセージが生成されませんでした"
+                fi
+                sleep 1
+              '';
+            };
+
+            # lazygit設定
+            xdg.configFile."lazygit/config.yml".text = ''
+              customCommands:
+                - description: "commit with Claude"
+                  key: "C"
+                  command: "claude-commit"
+                  context: "files"
+                  output: terminal
+            '';
+
+            # ----------------------------
             # Environment variables
             # ----------------------------
             home.sessionVariables = {
