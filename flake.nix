@@ -251,6 +251,27 @@
               enable = true;
             };
 
+            programs.tmux = {
+              enable = true;
+              mouse = true;
+              terminal = "tmux-256color";
+              historyLimit = 10000;
+              keyMode = "vi";
+              baseIndex = 0;
+              escapeTime = 0;
+              extraConfig = ''
+                # ペイン番号も1から
+                set -g pane-base-index 0
+
+                # ステータスバー
+                set -g status-position bottom
+                set -g status-style "bg=colour235,fg=colour246"
+
+                # マウスでペインサイズ変更・選択を有効化
+                set -g mouse on
+              '';
+            };
+
             programs.btop.enable = true;
             programs.tealdeer.enable = true;
 
