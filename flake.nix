@@ -80,6 +80,9 @@
 
               # prompt / shell extras
               zsh-powerlevel10k
+
+              # Network tools
+              bind
             ];
 
             # ----------------------------
