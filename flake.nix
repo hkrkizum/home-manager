@@ -59,6 +59,7 @@
               tree
               dust
               procs
+              btop
 
               # nix
               nil
@@ -83,6 +84,10 @@
 
               # Network tools
               bind
+
+              # build tools
+              gnumake
+              gnutar
             ];
 
             # ----------------------------
@@ -93,7 +98,7 @@
 
               settings = {
                 user.name = "Hikaru Koizumi";
-                user.email = "you@example.com";
+                user.email = "20899973+hkrkizum@users.noreply.github.com";
 
                 credential.helper = gcmPath;
 
@@ -273,6 +278,11 @@
                 # マウスでペインサイズ変更・選択を有効化
                 set -g mouse on
               '';
+            };
+
+            programs.yazi = {
+              enable = true;
+              enableZshIntegration = true;
             };
 
             programs.btop.enable = true;
