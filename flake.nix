@@ -74,6 +74,7 @@
               # containers
               podman
               podman-compose
+              lazydocker
 
               # GitHub CLI
               gh
