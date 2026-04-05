@@ -393,6 +393,44 @@
             # '';
 
             # ----------------------------
+            # Podman → Docker 互換設定
+            # ----------------------------
+            # ソケットアクティベーション: 接続時に自動で Podman API 起動
+            systemd.user.sockets.podman = {
+              Unit = {
+                Description = "Podman API Socket";
+              };
+              Socket = {
+                ListenStream = "%t/podman/podman.sock";
+                SocketMode = "0660";
+              };
+              Install = {
+                WantedBy = [ "sockets.target" ];
+              };
+            };
+
+            systemd.user.services.podman = {
+              Unit = {
+                Description = "Podman API Service";
+                Requires = "podman.socket";
+                After = "podman.socket";
+              };
+              Service = {
+                Type = "exec";
+                ExecStart = "${pkgs.podman}/bin/podman system service";
+              };
+            };
+
+            # エイリアスが効かない環境用の docker ラッパー
+            home.file.".local/bin/docker" = {
+              executable = true;
+              text = ''
+                #!/bin/sh
+                exec podman "$@"
+              '';
+            };
+
+            # ----------------------------
             # Nix substituters
             # ----------------------------
             xdg.configFile."nix/nix.conf".text = ''
@@ -408,6 +446,7 @@
               VISUAL = "vim";
               PAGER = "bat";
               VOLTA_HOME = "${homeDirectory}/.volta";
+              DOCKER_HOST = "unix:///run/user/1000/podman/podman.sock";
             };
 
             home.sessionPath = [
