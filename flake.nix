@@ -447,6 +447,7 @@
               VISUAL = "vim";
               PAGER = "bat";
               VOLTA_HOME = "${homeDirectory}/.volta";
+              PNPM_HOME = "${homeDirectory}/.local/share/pnpm";
               DOCKER_HOST = "unix:///run/user/1000/podman/podman.sock";
             };
 
@@ -454,6 +455,7 @@
               "$HOME/.volta/bin"
               "$HOME/.pixi/bin"
               "$HOME/.local/bin"
+              "$HOME/.local/share/pnpm"
               toolBin
               zedBin
               vscodeBin
