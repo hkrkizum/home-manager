@@ -164,29 +164,139 @@
     settings = {
       add_newline = false;
       command_timeout = 1000;
-      format = "$directory$git_branch$git_status$line_break$character";
-      right_format = "$status$cmd_duration$jobs$time";
+      format = pkgs.lib.concatStrings [
+        "[░▒▓](#a3aed2)"
+        "$os"
+        "$username"
+        "[](bg:#769ff0 fg:#a3aed2)"
+        "$directory"
+        "[](fg:#769ff0 bg:#394260)"
+        "$git_branch"
+        "$git_status"
+        "[](fg:#394260 bg:#212736)"
+        "$python"
+        "$pixi"
+        "$rlang"
+        "$nix_shell"
+        "$nodejs"
+        "$bun"
+        "$rust"
+        "$golang"
+        "$php"
+        "[ ](fg:#212736)"
+        "$fill"
+        "$status"
+        "$cmd_duration"
+        "$jobs"
+        "$time"
+        "\n$character"
+      ];
 
       character = {
         success_symbol = "[❯](bold green)";
         error_symbol = "[❯](bold red)";
       };
 
+      fill = {
+        symbol = " ";
+      };
+
+      os = {
+        disabled = false;
+        format = "[ $symbol]($style)";
+        style = "bg:#a3aed2 fg:#090c0c";
+        symbols = {
+          Windows = "";
+          Linux = "󰌽";
+          Ubuntu = "󰕈";
+          Debian = "󰣚";
+          NixOS = "󱄅";
+          Macos = "󰀵";
+          Unknown = "󰈔";
+        };
+      };
+
+      username = {
+        show_always = true;
+        style_user = "bg:#a3aed2 fg:#090c0c";
+        style_root = "bg:#a3aed2 fg:#ff5555";
+        format = "[ $user ]($style)";
+      };
+
       directory = {
-        style = "bold blue";
+        format = "[ $path ]($style)";
+        style = "bg:#769ff0 fg:#e3e5e5";
         truncation_length = 3;
         truncate_to_repo = false;
       };
 
       git_branch = {
-        symbol = "git:";
-        style = "bold purple";
-        format = "[$symbol$branch]($style) ";
+        symbol = "";
+        style = "bg:#394260";
+        format = "[[ $symbol $branch ](fg:#769ff0 bg:#394260)]($style)";
       };
 
       git_status = {
-        style = "bold red";
-        format = "[$all_status$ahead_behind]($style) ";
+        style = "bg:#394260 fg:#769ff0";
+        format = "[$all_status$ahead_behind ]($style)";
+      };
+
+      python = {
+        symbol = "";
+        style = "bg:#212736";
+        format = "[[ $symbol $version( ($virtualenv)) ](fg:#769ff0 bg:#212736)]($style)";
+      };
+
+      pixi = {
+        symbol = "󰏗";
+        style = "bg:#212736";
+        format = "[[ $symbol $version( ($environment)) ](fg:#769ff0 bg:#212736)]($style)";
+      };
+
+      rlang = {
+        symbol = "󰟔";
+        style = "bg:#212736";
+        format = "[[ $symbol $version ](fg:#769ff0 bg:#212736)]($style)";
+      };
+
+      nix_shell = {
+        symbol = "";
+        style = "bg:#212736";
+        format = "[[ $symbol $state ](fg:#769ff0 bg:#212736)]($style)";
+        heuristic = true;
+        impure_msg = "!";
+        pure_msg = "✓";
+        unknown_msg = "?";
+      };
+
+      nodejs = {
+        symbol = "";
+        style = "bg:#212736";
+        format = "[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)";
+      };
+
+      bun = {
+        symbol = "";
+        style = "bg:#212736";
+        format = "[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)";
+      };
+
+      rust = {
+        symbol = "";
+        style = "bg:#212736";
+        format = "[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)";
+      };
+
+      golang = {
+        symbol = "";
+        style = "bg:#212736";
+        format = "[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)";
+      };
+
+      php = {
+        symbol = "";
+        style = "bg:#212736";
+        format = "[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)";
       };
 
       status = {
@@ -207,7 +317,8 @@
 
       time = {
         disabled = false;
-        format = "[$time]($style)";
+        style = "bg:#1d2230";
+        format = "[[  $time ](fg:#a0a9cb bg:#1d2230)]($style)";
         time_format = "%H:%M:%S";
       };
     };
