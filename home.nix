@@ -134,7 +134,12 @@
       d = "podman";
     };
 
-    initContent = ''
+    initContent = pkgs.lib.mkMerge [
+      (pkgs.lib.mkOrder 650 ''
+        # fzf-tab must be loaded after compinit and before autosuggestions wrap widgets.
+        source ${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh
+      '')
+      ''
       # Volta
       export VOLTA_HOME="$HOME/.volta"
       export PATH="$VOLTA_HOME/bin:$PATH"
@@ -148,6 +153,13 @@
       # Bat config
       export BAT_PAGER="less -RF"
 
+      # Completion
+      zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+      zstyle ':fzf-tab:*' fzf-command fzf
+      zstyle ':fzf-tab:*' switch-group ',' '.'
+      zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza --tree --level=2 --color=always $realpath 2>/dev/null'
+      setopt complete_in_word
+
       # function y() {
       #   local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
       #   command yazi "$@" --cwd-file="$tmp"
@@ -155,7 +167,8 @@
       #   [ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
       #   command rm -f -- "$tmp"
       # }
-    '';
+      ''
+    ];
   };
 
   programs.starship = {
