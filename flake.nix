@@ -154,7 +154,6 @@
                 enable = true;
                 plugins = [
                   "git"
-                  "fzf"
                   "sudo"
                 ];
                 theme = "powerlevel10k/powerlevel10k";
@@ -191,6 +190,17 @@
 
                 # Podman alias compatibility
                 alias docker=podman
+
+                # Bat config
+                export BAT_PAGER="less -RF"
+
+                # function y() {
+                #   local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+                #   command yazi "$@" --cwd-file="$tmp"
+                #   IFS= read -r -d "" cwd < "$tmp"
+                #   [ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
+                #   command rm -f -- "$tmp"
+                # }
               '';
             };
 
@@ -284,6 +294,16 @@
             programs.yazi = {
               enable = true;
               enableZshIntegration = true;
+              shellWrapperName = "y";
+              settings = {
+                mgr = {
+                  show_hidden = true;
+                };
+              };
+              # You can omit this if you use overlays
+              # package = yazi.packages.${system}.default.override {
+              #   _7zz = pkgs._7zz-rar; # Support for RAR extraction
+              # };
             };
 
             programs.btop.enable = true;
