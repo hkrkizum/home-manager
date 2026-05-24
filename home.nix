@@ -50,9 +50,6 @@
     gh
     lazygit
 
-    # prompt / shell extras
-    zsh-powerlevel10k
-
     # Network tools
     bind
 
@@ -102,7 +99,7 @@
   };
 
   # ----------------------------
-  # zsh + Oh My Zsh + Powerlevel10k
+  # zsh
   # ----------------------------
   programs.zsh = {
     enable = true;
@@ -118,16 +115,6 @@
       expireDuplicatesFirst = true;
       extended = true;
       share = true;
-    };
-
-    oh-my-zsh = {
-      enable = true;
-      plugins = [
-        "git"
-        "sudo"
-      ];
-      theme = "powerlevel10k/powerlevel10k";
-      custom = "$HOME/.oh-my-zsh/custom";
     };
 
     shellAliases = {
@@ -148,9 +135,6 @@
     };
 
     initContent = ''
-      # powerlevel10k
-      [[ -r ~/.p10k.zsh ]] && source ~/.p10k.zsh
-
       # Volta
       export VOLTA_HOME="$HOME/.volta"
       export PATH="$VOLTA_HOME/bin:$PATH"
@@ -174,22 +158,60 @@
     '';
   };
 
-  # Oh My Zsh から powerlevel10k を見える場所へ配置
-  home.file.".oh-my-zsh/custom/themes/powerlevel10k".source =
-    "${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k";
+  programs.starship = {
+    enable = true;
+    enableZshIntegration = true;
+    settings = {
+      add_newline = false;
+      command_timeout = 1000;
+      format = "$directory$git_branch$git_status$line_break$character";
+      right_format = "$status$cmd_duration$jobs$time";
 
-  # 最小の powerlevel10k 設定
-  home.file.".p10k.zsh".text = ''
-    typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
-    typeset -g POWERLEVEL9K_MODE=nerdfont-complete
-    typeset -g POWERLEVEL9K_PROMPT_ON_NEWLINE=true
-    typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX=""
-    typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX="❯ "
-    typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir vcs)
-    typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status command_execution_time background_jobs time)
-    typeset -g POWERLEVEL9K_SHORTEN_STRATEGY=truncate_to_unique
-    typeset -g POWERLEVEL9K_TIME_FORMAT="%H:%M:%S"
-  '';
+      character = {
+        success_symbol = "[❯](bold green)";
+        error_symbol = "[❯](bold red)";
+      };
+
+      directory = {
+        style = "bold blue";
+        truncation_length = 3;
+        truncate_to_repo = false;
+      };
+
+      git_branch = {
+        symbol = "git:";
+        style = "bold purple";
+        format = "[$symbol$branch]($style) ";
+      };
+
+      git_status = {
+        style = "bold red";
+        format = "[$all_status$ahead_behind]($style) ";
+      };
+
+      status = {
+        disabled = false;
+        symbol = "x";
+        format = "[$symbol$status]($style) ";
+      };
+
+      cmd_duration = {
+        min_time = 1000;
+        format = "[$duration]($style) ";
+      };
+
+      jobs = {
+        symbol = "jobs:";
+        format = "[$symbol$number]($style) ";
+      };
+
+      time = {
+        disabled = false;
+        format = "[$time]($style)";
+        time_format = "%H:%M:%S";
+      };
+    };
+  };
 
   # ----------------------------
   # Podman (rootless) config files
